@@ -1,0 +1,8 @@
+h1 {
+  font-family: "Black Ops One", system-ui;
+  font-weight: 400;
+  font-style: normal;
+  font-size: 4rem;
+  -webkit-text-stroke-width: 2px;
+-webkit-text-stroke-color: yellow;
+}
