@@ -3,7 +3,7 @@ import styles from './Header.module.css'
 
 const Header = () => {
   return (
-    <div className='mb-auto text-body-emphasis text_border'><h1>Secret Word</h1></div>
+    <div className='text-body-emphasis text_border'><h1 className={styles.font}>Secret Word</h1></div>
   )
 }
 

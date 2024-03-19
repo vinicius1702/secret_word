@@ -1,4 +1,4 @@
-export const wordsList = {
+const wordList = {
     carro: ["Motor", "Porta", "Capô", "Pneu", "Antena", "Volante", "Retrovisor", "Cinto", "Farol", "Buzina"],
     fruta: ["Banana", "Maçã", "Pêra", "Mamão", "Laranja", "Abacaxi", "Uva", "Melancia", "Morango", "Kiwi"],
     corpo: ["Braço", "Perna", "Cérebro", "Pescoço", "Olhos", "Barriga", "Dedo", "Nariz", "Orelha", "Pé"],
@@ -13,3 +13,5 @@ export const wordsList = {
     transporte: ["Avião", "Bicicleta", "Barco", "Trem", "Ônibus", "Helicóptero", "Caminhão", "Carroça", "Metrô", "Carruagem"],
     cor: ["Vermelho", "Azul", "Verde", "Amarelo", "Roxo", "Laranja", "Preto", "Branco", "Cinza", "Marrom"]
 };
+
+export default wordList
