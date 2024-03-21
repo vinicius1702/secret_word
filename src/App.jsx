@@ -29,15 +29,24 @@ function App() {
   const [wrongLetters, setWrongLetters] = useState([])
   const [guesses, setGuesses] = useState(guessesQtd)
   const [score, setScore] = useState(0)
+  const [difficulty, setDifficulty] = useState('easy')
 
   //functions
-  const pickWordAndCategory = useCallback(() => {
+  const pickWordAndCategory = () => {
     const categories = Object.keys(words)
     const category = categories[Math.floor(Math.random() * Object.keys(categories).length)]
     const word = words[category][Math.floor(Math.random() * words[category].length)]
 
+    if(difficulty==='easy'){
+      setGuesses(word.length)
+    } else if (difficulty==='medium'){
+      setGuesses(Math.floor(word.length * 0.5))
+    } else if (difficulty==='hard'){
+      setGuesses(Math.floor(word.length * 0.3))
+    }
+
     return { word, category }
-  }, [words])
+  }
 
   const startGame = useCallback(() => {
     clearLetterStates()
@@ -115,7 +124,7 @@ function App() {
         <div className='text-center'>
           <Header />
         </div>
-        {gameStage === 'start' && <StartScreen startGame={startGame} />}
+        {gameStage === 'start' && <StartScreen startGame={startGame} setDifficulty={setDifficulty}/>}
         {gameStage === 'game' && <Game 
         verifyLetter={verifyLetter} 
         pickedWord={pickedWord} 
