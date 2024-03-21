@@ -1,5 +1,5 @@
 //react
-import { useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 //styles
 import './App.css'
 //database
@@ -11,10 +11,12 @@ import Game from './components/Game'
 import GameOver from './components/GameOver'
 
 const stages = [
-  {id: 1, name: 'start'},
-  {id: 2, name: 'game'},
-  {id: 3, name: 'end'}
+  { id: 1, name: 'start' },
+  { id: 2, name: 'game' },
+  { id: 3, name: 'end' }
 ]
+
+const guessesQtd = 10
 
 function App() {
   //states
@@ -23,48 +25,108 @@ function App() {
   const [pickedWord, setPickedWord] = useState('')
   const [pickedCategory, setPickedCategory] = useState('')
   const [letters, setLetters] = useState([])
+  const [guessedLetters, setGuessedLetters] = useState([])
+  const [wrongLetters, setWrongLetters] = useState([])
+  const [guesses, setGuesses] = useState(guessesQtd)
+  const [score, setScore] = useState(0)
 
   //functions
-  const pickWordAndCategory = ()=>{
+  const pickWordAndCategory = useCallback(() => {
     const categories = Object.keys(words)
-    const category = categories[Math.floor(Math.random()*Object.keys(categories).length)]
-    const word = words[category][Math.floor(Math.random()*words[category].length)]
-   
-    return {word, category}
-  }
+    const category = categories[Math.floor(Math.random() * Object.keys(categories).length)]
+    const word = words[category][Math.floor(Math.random() * words[category].length)]
 
-  const startGame = ()=>{
-    const {word, category} = pickWordAndCategory()
+    return { word, category }
+  }, [words])
+
+  const startGame = useCallback(() => {
+    clearLetterStates()
+
+    const { word, category } = pickWordAndCategory()
 
     let wordLetters = word.split('')
-    wordLetters = wordLetters.map((l)=>l.toUpperCase())
+    wordLetters = wordLetters.map((l) => l.toUpperCase())
 
     setPickedWord(word)
     setPickedCategory(category)
     setLetters(wordLetters)
 
-    console.log(word, category, wordLetters)
     setGameStage(stages[1].name)
+  }, [pickWordAndCategory])
+
+  const verifyLetter = (letter) => {
+    const normalizedLetter = letter.toUpperCase()
+
+    if(guessedLetters.includes(normalizedLetter) || wrongLetters.includes(normalizedLetter)){
+      return
+    }
+
+    if(letters.includes(normalizedLetter)){
+      setGuessedLetters((actualGuessedLetters)=> [
+        ...actualGuessedLetters,
+        normalizedLetter
+      ])
+    } else {
+      setWrongLetters((actualWrongLetters)=> [
+        ...actualWrongLetters,
+        normalizedLetter
+      ])
+
+      setGuesses((actualGuesses)=> actualGuesses - 1)
+    }
   }
 
-  const verifyLetter = ()=>{
-    setGameStage(stages[2].name)
+  const clearLetterStates = ()=>{
+    setGuessedLetters([])
+    setWrongLetters([])
   }
 
-  const retry = ()=>{
+  useEffect(()=>{
+    if(guesses <= 0){
+      clearLetterStates()
+
+      setGameStage(stages[2].name)
+    }
+  }, [guesses])
+
+  useEffect(()=>{
+
+    const uniqueLetters = [...new Set(letters)]
+
+    if(uniqueLetters.length === 0){
+      setGameStage(stages[0].name)
+    } else if(guessedLetters.length === uniqueLetters.length){
+      setScore((actualScore)=>actualScore += Number(letters.length) * 10)
+
+      startGame()
+    }
+
+  }, [guessedLetters, letters, startGame])
+
+  const retry = () => {
+    setScore(0)
+    setGuesses(guessesQtd)
     setGameStage(stages[0].name)
   }
 
   return (
     <>
-    <div className='d-flex flex-column justify-content-center align-items-center vh-100 m-0 p-0'>
-      <div className='fixed-top text-center'>
-        <Header />
+      <div className='d-flex flex-column justify-content-center align-items-center vh-100 m-0 p-0'>
+        <div className='text-center'>
+          <Header />
+        </div>
+        {gameStage === 'start' && <StartScreen startGame={startGame} />}
+        {gameStage === 'game' && <Game 
+        verifyLetter={verifyLetter} 
+        pickedWord={pickedWord} 
+        pickedCategory={pickedCategory} 
+        letters={letters} 
+        guessedLetters={guessedLetters} 
+        wrongLetters={wrongLetters} 
+        guesses={guesses} 
+        score={score}/>}
+        {gameStage === 'end' && <GameOver pickedWord={pickedWord} score={score} retry={retry} />}
       </div>
-      {gameStage === 'start' && <StartScreen startGame={startGame}/>}
-      {gameStage === 'game' && <Game verifyLetter={verifyLetter}/>}
-      {gameStage === 'end' && <GameOver retry={retry}/>}
-    </div>
     </>
   )
 }
