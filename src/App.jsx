@@ -134,7 +134,7 @@ function App() {
         wrongLetters={wrongLetters} 
         guesses={guesses} 
         score={score}/>}
-        {gameStage === 'end' && <GameOver pickedWord={pickedWord} score={score} retry={retry} />}
+        {gameStage === 'end' && <GameOver startGame={startGame} setDifficulty={setDifficulty} pickedWord={pickedWord} score={score} retry={retry} />}
       </div>
     </>
   )

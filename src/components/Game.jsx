@@ -21,7 +21,7 @@ const Game = ({ verifyLetter, pickedWord, pickedCategory, letters, guessedLetter
       </p>
       <h2 className='text-warning'>Advinhe a palavra:</h2>
       <h4 className='text-warning'>TEMA: <span className='text-light fw-bold text-uppercase'>{pickedCategory}</span></h4>
-      <p className='text-warning fw-bolder'>Você ainda tem {guesses} tentativa(s).</p>
+      <p className='text-warning fw-bolder'>Você ainda tem {guesses} vida{guesses > 1 ? ("s") : ""}.</p>
       <div className='bg-dark m-1 p-2 border border-5 border-warning d-flex'>
         {letters.map((letter, i)=>(
           guessedLetters.includes(letter)?(<span key={i} style={{height: "40px", width: "40px"}} className='text-uppercase text-dark fw-bold bg-light d-flex justify-content-center align-items-center fs-2 lh-1 border border-1 border-dark'>{letter}</span>):(<span key={i} style={{height: "40px", width: "40px"}} className='text-uppercase text-dark fw-bold bg-light d-flex justify-content-center align-items-center fs-2 p-1 lh-1 border border-1 border-dark'></span>)
@@ -35,7 +35,7 @@ const Game = ({ verifyLetter, pickedWord, pickedCategory, letters, guessedLetter
         </form>
       </div>
       <div className='text-warning fs-6 fw-bolder mb-1 text-center'>
-        <p>Letras já utilizadas:</p>
+        <p>Letras erradas:</p>
         {wrongLetters.map((letter, i)=>(
           <span key={i} className='text-light text-uppercase'>{letter}, </span>
         ))}
